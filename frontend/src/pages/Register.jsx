@@ -114,7 +114,7 @@ const Register = () => {
         <div className="mb-4">
           <label htmlFor="verificationLink" className="block text-sm font-medium mb-1 text-ink">Verification link</label>
           <input id="verificationLink" name="verificationLink" type="url" placeholder="https://www.linkedin.com/in/your-profile" value={formData.verificationLink} onChange={handleChange} className={inputClass('verificationLink')} />
-          <p className="text-xs text-muted mt-1">A public page that shows your degree, for example your LinkedIn education entry.</p>
+          <p className="text-xs text-muted mt-1">A link that shows your degree, such as a My eQuals share link or your LinkedIn education entry.</p>
           <FieldError message={errors.verificationLink} />
         </div>
 
@@ -123,7 +123,7 @@ const Register = () => {
             <input name="consent" type="checkbox" checked={formData.consent} onChange={handleChange} className="mt-1 accent-brand" />
             <span>
               I agree that AlumniLink stores these details so an administrator can verify my graduation.
-              They are never shown to other users.
+              They are never shown to other members.
             </span>
           </label>
           <FieldError message={errors.consent} />
