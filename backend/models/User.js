@@ -2,13 +2,41 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
-const userSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    university: { type: String },
-    address: { type: String },
-});
+const userSchema = mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, 'Please add a name'],
+    },
+    email: {
+      type: String,
+      required: [true, 'Please add an email'],
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: [true, 'Please add a password'],
+    },
+    // ALN-8 new field
+    role: {
+      type: String,
+      enum: ['graduate', 'admin'],
+      default: 'graduate',
+    },
+    verificationStatus: {
+      type: String,
+      enum: ['pending', 'approved', 'rejected'],
+      default: 'pending',
+    },
+    studentId: {
+      type: String,
+      required: false, // set to false if you want to make it optional
+    }
+  },
+  {
+    timestamps: true,
+  }
+);
 
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next();
