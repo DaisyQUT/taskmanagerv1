@@ -1,5 +1,9 @@
 const express = require('express');
-const { getPendingApplications } = require('../controllers/adminController');
+const {
+    getPendingApplications,
+    approveApplication,
+    rejectApplication,
+} = require('../controllers/adminController');
 const { protect, requireRole } = require('../middleware/authMiddleware');
 
 const router = express.Router();
@@ -8,5 +12,7 @@ const router = express.Router();
 router.use(protect, requireRole('admin'));
 
 router.get('/verifications', getPendingApplications);
+router.patch('/verifications/:id/approve', approveApplication);
+router.patch('/verifications/:id/reject', rejectApplication);
 
 module.exports = router;
