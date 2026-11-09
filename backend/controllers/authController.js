@@ -44,30 +44,40 @@ const getProfile = async (req, res) => {
       res.status(200).json({
         name: user.name,
         email: user.email,
-        university: user.university,
-        address: user.address,
+        institution: user.institution,
       });
+
     } catch (error) {
       res.status(500).json({ message: 'Server error', error: error.message });
     }
   };
 
 const updateUserProfile = async (req, res) => {
-    try {
-        const user = await User.findById(req.user.id);
-        if (!user) return res.status(404).json({ message: 'User not found' });
+  try {
+    // must be authenticated to update profile
+    const user = await User.findById(req.user.id);
 
-        const { name, email, university, address } = req.body;
-        user.name = name || user.name;
-        user.email = email || user.email;
-        user.university = university || user.university;
-        user.address = address || user.address;
+    if (user) {
+      const { name, email, institution } = req.body;
+      user.name = name || user.name;
+      user.email = email || user.email;
+      user.institution = institution || user.institution;
 
-        const updatedUser = await user.save();
-        res.json({ id: updatedUser.id, name: updatedUser.name, email: updatedUser.email, university: updatedUser.university, address: updatedUser.address, token: generateToken(updatedUser.id) });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+      const updatedUser = await user.save();
+
+      res.json({
+        id: updatedUser.id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        institution: updatedUser.institution,
+        token: generateToken(updatedUser.id)
+      });
+    } else {
+      res.status(404).json({ message: 'User not found' });
     }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 module.exports = { registerUser, loginUser, updateUserProfile, getProfile };

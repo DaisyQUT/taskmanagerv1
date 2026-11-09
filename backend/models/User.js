@@ -20,8 +20,8 @@ const userSchema = mongoose.Schema(
     // ALN-8 new field
     role: {
       type: String,
-      enum: ['graduate', 'admin'],
-      default: 'graduate',
+      enum: ['member', 'admin'],
+      default: 'member',
     },
     verificationStatus: {
       type: String,
@@ -30,7 +30,9 @@ const userSchema = mongoose.Schema(
     },
     studentId: {
       type: String,
-      required: false, // set to false if you want to make it optional
+    },
+    institution: {
+      type: String,
     }
   },
   {
