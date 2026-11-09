@@ -15,14 +15,19 @@ module.exports = {
         line: '#D0D5DD', // input and card borders
         surface: '#F9FAFB', // page background
         danger: {
-          DEFAULT: '#B42318', // error 
+          DEFAULT: '#be534b', // error 
           bg: '#FEF3F2',
           border: '#FDA29B',
         },
         success: {
-          DEFAULT: '#067647', // success
+          DEFAULT: '#0f744a', // success
           bg: '#ECFDF3',
           border: '#ABEFC6',
+        },
+                warning: {
+          DEFAULT: '#ea6a29', // needs attention soon
+          bg: '#FFFAEB',
+          border: '#e8cf8a',
         },
       },
     },
