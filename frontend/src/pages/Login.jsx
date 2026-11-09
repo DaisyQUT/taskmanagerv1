@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axiosInstance from '../axiosConfig';
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const { login } = useAuth();
   const navigate = useNavigate();
+    const location = useLocation();
+  // ALN-9: set by the register page after a registration.
+  const justRegistered = location.state?.registered;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,6 +26,11 @@ const Login = () => {
     <div className="max-w-md mx-auto mt-20">
       <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded">
         <h1 className="text-2xl font-bold mb-4 text-center">Login</h1>
+                {justRegistered && (
+          <p className="mb-4 rounded border border-success-border bg-success-bg p-3 text-sm text-success">
+            Registration received. Your application is pending.
+          </p>
+        )}
         <input
           type="email"
           placeholder="Email"
