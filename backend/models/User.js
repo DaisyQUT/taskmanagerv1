@@ -33,8 +33,27 @@ const userSchema = mongoose.Schema(
     },
     institution: {
       type: String,
-    }
+    },
+        institution: {
+      type: String,
+    },
+    // ALN-9: graduation details and privacy consent collected at registration
+    degree: {
+      type: String,
+    },
+    graduationYear: {
+      type: Number,
+    },
+    verificationLink: {
+      type: String,
+    },
+    consentAt: {
+      type: Date,
+    },
   },
+    
+
+  
   {
     timestamps: true,
   }
