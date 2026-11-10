@@ -50,6 +50,12 @@ const userSchema = mongoose.Schema(
     consentAt: {
       type: Date,
     },
+        rejectionReason: {
+      type: String,
+    },
+    decidedAt: {
+      type: Date,
+    },
   },
     
 
