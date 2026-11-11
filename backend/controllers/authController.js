@@ -72,50 +72,60 @@ const loginUser = async (req, res) => {
     }
 };
 
+// ALN-26 (R3): members see their graduation details and where their application is up to.
 const getProfile = async (req, res) => {
     try {
-      const user = await User.findById(req.user.id);
-      if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-      }
-  
-      res.status(200).json({
-        name: user.name,
-        email: user.email,
-        institution: user.institution,
-      });
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
 
+        res.status(200).json({
+            name: user.name,
+            email: user.email,
+            institution: user.institution,
+            degree: user.degree,
+            graduationYear: user.graduationYear,
+            verificationStatus: user.verificationStatus,
+            rejectionReason: user.rejectionReason,
+        });
     } catch (error) {
-      res.status(500).json({ message: 'Server error', error: error.message });
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
-  };
+};
 
+// ALN-26: members can change their name and email only. Graduation details were checked by
+// an admin, so changing them here would undo the verification.
 const updateUserProfile = async (req, res) => {
-  try {
-    // must be authenticated to update profile
-    const user = await User.findById(req.user.id);
+    try {
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
 
-    if (user) {
-      const { name, email, institution } = req.body;
-      user.name = name || user.name;
-      user.email = email || user.email;
-      user.institution = institution || user.institution;
+        const name = (req.body.name || '').trim();
+        const email = (req.body.email || '').trim().toLowerCase();
 
-      const updatedUser = await user.save();
+        if (email && email !== user.email) {
+            const taken = await User.findOne({ email });
+            if (taken) {
+                return res.status(400).json({ message: 'An account with this email already exists.' });
+            }
+        }
 
-      res.json({
-        id: updatedUser.id,
-        name: updatedUser.name,
-        email: updatedUser.email,
-        institution: updatedUser.institution,
-        token: generateToken(updatedUser.id)
-      });
-    } else {
-      res.status(404).json({ message: 'User not found' });
+        user.name = name || user.name;
+        user.email = email || user.email;
+        const updatedUser = await user.save();
+
+        res.json({
+            id: updatedUser.id,
+            name: updatedUser.name,
+            email: updatedUser.email,
+            token: generateToken(updatedUser.id),
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
 };
 
 module.exports = { registerUser, loginUser, updateUserProfile, getProfile };
