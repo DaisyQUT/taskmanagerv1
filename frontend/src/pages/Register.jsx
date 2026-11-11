@@ -49,7 +49,7 @@ const Register = () => {
   };
 
   const inputClass = (field) =>
-    `w-full p-2 border rounded text-ink focus:outline-none focus:ring-2 ${
+    `w-full p-2 border rounded-lg text-ink focus:outline-none focus:ring-2 ${
       errors[field]
         ? 'border-danger focus:ring-danger/20'
         : 'border-line focus:border-brand focus:ring-brand/20'
@@ -57,14 +57,14 @@ const Register = () => {
 
   return (
     <div className="max-w-md mx-auto mt-10 mb-10">
-      <form onSubmit={handleSubmit} noValidate className="bg-white p-6 border border-line rounded-lg">
+      <form onSubmit={handleSubmit} noValidate className="bg-white p-6 border border-line rounded-xl">
         <h1 className="text-2xl font-bold mb-2 text-center text-ink">Join AlumniLink</h1>
         <p className="text-sm text-muted mb-4 text-center">
-          An administrator checks your  details before you can use the community.
+          An administrator checks your details before you can use the community.
         </p>
 
         {formMessage && (
-          <p className="mb-4 rounded border border-danger-border bg-danger-bg p-3 text-sm text-danger">{formMessage}</p>
+          <p role="alert" className="mb-4 text-sm text-danger">{formMessage}</p>
         )}
 
         <div className="mb-4">
@@ -129,7 +129,7 @@ const Register = () => {
           <FieldError message={errors.consent} />
         </div>
 
-        <button type="submit" disabled={submitting} className="w-full bg-brand hover:bg-brand-hover text-white font-medium p-2 rounded disabled:opacity-50">
+        <button type="submit" disabled={submitting} className="w-full bg-brand hover:bg-brand-hover text-white font-bold p-2 rounded-lg disabled:opacity-50">
           {submitting ? 'Submitting...' : 'Register'}
         </button>
 
