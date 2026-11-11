@@ -1,5 +1,10 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+
+// ALN-27: white bar with the purple logo. NavLink marks the page you are on,
+// so the current page shows in purple and bold instead of using a coloured button.
+const linkClass = ({ isActive }) =>
+  isActive ? 'font-bold text-brand' : 'text-muted hover:text-ink';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -11,33 +16,27 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-blue-600 text-white p-4 flex justify-between items-center">
-      <Link to="/" className="text-2xl font-bold">Task Manager</Link>
-      <div>
-        {user ? (
-          <>
-            {user.role === 'admin' && (
-              <Link to="/admin/verifications" className="mr-4">Verification queue</Link>
-            )}
-            <Link to="/profile" className="mr-4">Profile</Link>
-            <button
-              onClick={handleLogout}
-              className="bg-red-500 px-4 py-2 rounded hover:bg-red-700"
-            >
-              Logout
-            </button>
-          </>
-        ) : (
-          <>
-            <Link to="/login" className="mr-4">Login</Link>
-            <Link
-              to="/register"
-              className="bg-green-500 px-4 py-2 rounded hover:bg-green-700"
-            >
-              Register
-            </Link>
-          </>
-        )}
+    <nav className="bg-white border-b border-line">
+      <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+        <Link to="/" className="text-lg font-bold text-brand">AlumniLink</Link>
+        <div className="flex items-center gap-6 text-sm">
+          {user ? (
+            <>
+              {user.role === 'admin' && (
+                <NavLink to="/admin/verifications" className={linkClass}>Verification queue</NavLink>
+              )}
+              <NavLink to="/profile" className={linkClass}>Profile</NavLink>
+              <button type="button" onClick={handleLogout} className="text-muted hover:text-ink">
+                Log out
+              </button>
+            </>
+          ) : (
+            <>
+              <NavLink to="/login" className={linkClass}>Log in</NavLink>
+              <NavLink to="/register" className={linkClass}>Register</NavLink>
+            </>
+          )}
+        </div>
       </div>
     </nav>
   );
