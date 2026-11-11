@@ -1,4 +1,7 @@
-// AlumniLink design tokens: one place for every colour used in the app.
+// AlumniLink design tokens: one place for every colour and the typeface used in the app.
+// ALN-27: white and deep purple theme. Status is shown with a symbol and a word, not a
+// coloured box, so the palette stays small: brand purple, greys, and one colour for problems.
+const defaultTheme = require('tailwindcss/defaultTheme');
 
 module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
@@ -6,29 +9,18 @@ module.exports = {
     extend: {
       colors: {
         brand: {
-          DEFAULT: '#1D3557', // primary actions
-          hover: '#16293F',
-          soft: '#E8EDF4', // selected or highlighted backgrounds
+          DEFAULT: '#3D1F4F', // primary actions, logo, current page, verified
+          hover: '#2D163B',
         },
-        ink: '#101828', // headings and body text
-        muted: '#475467', // helper text, secondary labels
-        line: '#D0D5DD', // input and card borders
-        surface: '#F9FAFB', // page background
-        danger: {
-          DEFAULT: '#be534b', // error 
-          bg: '#FEF3F2',
-          border: '#FDA29B',
-        },
-        success: {
-          DEFAULT: '#0f744a', // success
-          bg: '#ECFDF3',
-          border: '#ABEFC6',
-        },
-                warning: {
-          DEFAULT: '#ea6a29', // needs attention soon
-          bg: '#FFFAEB',
-          border: '#e8cf8a',
-        },
+        ink: '#1B1421', // headings and body text
+        muted: '#5F5468', // helper text, secondary labels, pending
+        line: '#E5DEEA', // every border
+        surface: '#FAF8FC', // page background
+        danger: '#7A2E45', // errors and "not verified"
+      },
+      fontFamily: {
+        // Manrope is bundled with the app (ALN-27), so no request goes to a font service.
+        sans: ['Manrope', ...defaultTheme.fontFamily.sans],
       },
     },
   },
