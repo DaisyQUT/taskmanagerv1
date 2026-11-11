@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ALN-27: every page starts on the same background, text colour and typeface. */
+@layer base {
+  body {
+    @apply bg-surface text-ink font-sans antialiased;
+  }
+}

@@ -13,13 +13,16 @@ const Detail = ({ label, children }) => (
   </div>
 );
 
+// ALN-27: no coloured badge. Overdue applications stand out with a filled dot,
+// purple and bold; everything else is plain grey text.
 const WaitingBadge = ({ days }) => {
   const overdue = days >= ATTENTION_AFTER_DAYS;
-  const style = overdue
-    ? 'border-warning-border bg-warning-bg text-warning'
-    : 'border-line bg-surface text-muted';
   const label = days === 0 ? 'Submitted today' : `Waiting ${days} day${days === 1 ? '' : 's'}`;
-  return <span className={`whitespace-nowrap rounded-full border px-3 py-1 text-xs font-medium ${style}`}>{label}</span>;
+  return (
+    <span className={`whitespace-nowrap text-sm ${overdue ? 'font-bold text-brand' : 'text-muted'}`}>
+      {overdue && '● '}{label}
+    </span>
+  );
 };
 
 const VerificationQueue = () => {
@@ -120,26 +123,26 @@ const VerificationQueue = () => {
       </p>
 
       {notice && (
-        <p role="status" className="mb-4 rounded border border-success-border bg-success-bg p-3 text-sm text-success">
-          {notice}
+        <p role="status" className="mb-4 text-sm font-semibold text-brand">
+          ✓ {notice}
         </p>
       )}
 
       {loading && <p className="text-sm text-muted">Loading applications</p>}
 
       {!loading && error && (
-        <p className="rounded border border-danger-border bg-danger-bg p-3 text-sm text-danger">{error}</p>
+        <p role="alert" className="text-sm text-danger">{error}</p>
       )}
 
       {!loading && !error && applications.length === 0 && (
-        <div className="rounded-lg border border-line bg-white p-8 text-center">
+        <div className="rounded-xl border border-line bg-white p-8 text-center">
           <p className="font-medium text-ink">Nothing to review</p>
           <p className="text-sm text-muted mt-1">New applications appear here when graduates register.</p>
         </div>
       )}
 
       {!loading && !error && applications.length > 0 && (
-        <ul className="divide-y divide-line rounded-lg border border-line bg-white">
+        <ul className="divide-y divide-line rounded-xl border border-line bg-white">
           {applications.map((application) => (
             <li key={application.id} className="p-5">
               <div className="flex items-start justify-between gap-4">
@@ -170,7 +173,7 @@ const VerificationQueue = () => {
                     type="button"
                     disabled={saving}
                     onClick={() => approve(application)}
-                    className="rounded bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-hover disabled:opacity-50"
+                    className="rounded-lg bg-brand px-4 py-2 text-sm font-bold text-white hover:bg-brand-hover disabled:opacity-50"
                   >
                     Approve
                   </button>
@@ -178,7 +181,7 @@ const VerificationQueue = () => {
                     type="button"
                     disabled={saving}
                     onClick={() => setRejectingId(application.id)}
-                    className="rounded border border-line bg-white px-4 py-2 text-sm font-medium text-ink hover:bg-surface disabled:opacity-50"
+                    className="rounded-lg border border-line bg-white px-4 py-2 text-sm font-bold text-ink hover:bg-surface disabled:opacity-50"
                   >
                     Reject
                   </button>
@@ -186,7 +189,7 @@ const VerificationQueue = () => {
               )}
 
               {rejectingId === application.id && (
-                <div className="mt-4 rounded border border-line bg-surface p-4">
+                <div className="mt-4 border-t border-line pt-4">
                   <label htmlFor="reason" className="block text-sm font-medium text-ink">
                     Reason for rejecting
                   </label>
@@ -198,7 +201,7 @@ const VerificationQueue = () => {
                       setReason(e.target.value);
                       setReasonError('');
                     }}
-                    className={`mt-1 w-full rounded border p-2 text-sm text-ink ${reasonError ? 'border-danger' : 'border-line'}`}
+                    className={`mt-1 w-full rounded-lg border p-2 text-sm text-ink ${reasonError ? 'border-danger' : 'border-line'}`}
                   />
                   <p className="text-xs text-muted">Say what they need to fix. At least {MIN_REASON_LENGTH} characters.</p>
                   {reasonError && <p className="mt-1 text-sm text-danger">{reasonError}</p>}
@@ -208,7 +211,7 @@ const VerificationQueue = () => {
                       type="button"
                       disabled={saving}
                       onClick={() => reject(application)}
-                      className="rounded bg-danger px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
+                      className="rounded-lg bg-danger px-4 py-2 text-sm font-bold text-white hover:opacity-90 disabled:opacity-50"
                     >
                       Reject application
                     </button>
@@ -220,7 +223,7 @@ const VerificationQueue = () => {
                         setReason('');
                         setReasonError('');
                       }}
-                      className="rounded border border-line bg-white px-4 py-2 text-sm font-medium text-ink hover:bg-surface disabled:opacity-50"
+                      className="rounded-lg border border-line bg-white px-4 py-2 text-sm font-bold text-ink hover:bg-surface disabled:opacity-50"
                     >
                       Cancel
                     </button>
