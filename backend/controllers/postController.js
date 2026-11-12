@@ -1,8 +1,12 @@
 const Post = require('../models/Post');
+const Response = require('../models/Response');
 const { validatePost } = require('../utils/validatePost');
 const { POST_TYPES } = require('../utils/postOptions');
 
 const PAGE_SIZE = 10;
+const MESSAGE_MIN = 20;
+const MESSAGE_MAX = 300;
+const NOT_FOUND = "We couldn't find that post.";
 
 // ALN-18 (R8): an approved member publishes a Request or an Offer.
 const createPost = async (req, res) => {
@@ -65,8 +69,11 @@ const getPost = async (req, res) => {
     try {
         const post = await Post.findById(req.params.id).populate('author', 'name');
         if (!post) {
-            return res.status(404).json({ message: 'We couldn\'t find that post.' });
+            return res.status(404).json({ message: NOT_FOUND });
         }
+
+        // ALN-19: if the viewer has already responded, show them their response instead of the form.
+        const myResponse = await Response.findOne({ post: post.id, responder: req.user.id });
 
         res.json({
             id: post.id,
@@ -79,14 +86,58 @@ const getPost = async (req, res) => {
             authorName: post.author?.name,
             isOwner: String(post.author?._id) === String(req.user.id),
             createdAt: post.createdAt,
+            myResponse: myResponse
+                ? { message: myResponse.message, status: myResponse.status, createdAt: myResponse.createdAt }
+                : null,
         });
     } catch (error) {
         // An id that isn't a valid database id is treated as "not found", not as a server error.
         if (error.name === 'CastError') {
-            return res.status(404).json({ message: 'We couldn\'t find that post.' });
+            return res.status(404).json({ message: NOT_FOUND });
         }
         res.status(500).json({ message: 'Something went wrong. Try again in a moment.' });
     }
 };
 
-module.exports = { createPost, listPosts, getPost, PAGE_SIZE };
+// ALN-19 (R11): an approved member responds to someone else's open post, once.
+const respondToPost = async (req, res) => {
+    const message = typeof req.body.message === 'string' ? req.body.message.trim() : '';
+    if (message.length < MESSAGE_MIN || message.length > MESSAGE_MAX) {
+        return res.status(400).json({
+            message: 'Please correct the highlighted fields.',
+            errors: { message: `Your message must be ${MESSAGE_MIN} to ${MESSAGE_MAX} characters` },
+        });
+    }
+
+    try {
+        const post = await Post.findById(req.params.id);
+        if (!post) {
+            return res.status(404).json({ message: NOT_FOUND });
+        }
+        if (String(post.author) === String(req.user.id)) {
+            return res.status(400).json({ message: "You can't respond to your own post." });
+        }
+        if (post.status !== 'open') {
+            return res.status(409).json({ message: 'This post is closed.' });
+        }
+
+        const existing = await Response.findOne({ post: post.id, responder: req.user.id });
+        if (existing) {
+            return res.status(409).json({ message: "You've already responded to this post." });
+        }
+
+        const response = await Response.create({ post: post.id, responder: req.user.id, message });
+        res.status(201).json({ id: response.id, status: response.status });
+    } catch (error) {
+        if (error.name === 'CastError') {
+            return res.status(404).json({ message: NOT_FOUND });
+        }
+        // Two clicks at the same moment can pass the check above; the unique index stops the second.
+        if (error.code === 11000) {
+            return res.status(409).json({ message: "You've already responded to this post." });
+        }
+        res.status(500).json({ message: 'Something went wrong. Try again in a moment.' });
+    }
+};
+
+module.exports = { createPost, listPosts, getPost, respondToPost, PAGE_SIZE };
