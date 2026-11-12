@@ -1,5 +1,5 @@
 const express = require('express');
-const { createPost, listPosts, getPost } = require('../controllers/postController');
+const { createPost, listPosts, getPost, respondToPost } = require('../controllers/postController');
 const { protect, requireRole, requireApproved } = require('../middleware/authMiddleware');
 
 const router = express.Router();
@@ -11,5 +11,6 @@ router.use(protect, requireRole('member'), requireApproved);
 router.get('/', listPosts);
 router.post('/', createPost);
 router.get('/:id', getPost);
+router.post('/:id/responses', respondToPost);
 
 module.exports = router;
