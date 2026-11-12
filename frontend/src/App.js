@@ -5,6 +5,7 @@ import Register from './pages/Register';
 import Profile from './pages/Profile';
 import Tasks from './pages/Tasks';
 import VerificationQueue from './pages/VerificationQueue';
+import NewPost from './pages/NewPost';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/tasks" element={<Tasks />} />
         <Route path="/admin/verifications" element={<VerificationQueue />} />
+        <Route path="/posts/new" element={<NewPost />} />
       </Routes>
     </Router>
   );
