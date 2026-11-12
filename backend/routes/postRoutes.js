@@ -1,5 +1,5 @@
 const express = require('express');
-const { createPost } = require('../controllers/postController');
+const { createPost, listPosts, getPost } = require('../controllers/postController');
 const { protect, requireRole, requireApproved } = require('../middleware/authMiddleware');
 
 const router = express.Router();
@@ -8,6 +8,8 @@ const router = express.Router();
 // in the network, so requireRole('member') keeps them out even though requireApproved lets them pass.
 router.use(protect, requireRole('member'), requireApproved);
 
+router.get('/', listPosts);
 router.post('/', createPost);
+router.get('/:id', getPost);
 
 module.exports = router;

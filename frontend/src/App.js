@@ -6,6 +6,8 @@ import Profile from './pages/Profile';
 import Tasks from './pages/Tasks';
 import VerificationQueue from './pages/VerificationQueue';
 import NewPost from './pages/NewPost';
+import Boards from './pages/Boards';
+import PostDetail from './pages/PostDetail';
 
 function App() {
   return (
@@ -19,7 +21,9 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/tasks" element={<Tasks />} />
         <Route path="/admin/verifications" element={<VerificationQueue />} />
+        <Route path="/boards" element={<Boards />} />
         <Route path="/posts/new" element={<NewPost />} />
+        <Route path="/posts/:id" element={<PostDetail />} />
       </Routes>
     </Router>
   );

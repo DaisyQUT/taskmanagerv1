@@ -16,7 +16,7 @@ const STATUS = {
     label: '✓ Verified',
     labelClass: 'text-brand',
     title: "You're verified",
-    text: 'Your graduation details have been confirmed.',
+    text: 'Your graduation details have been confirmed. You can now use the boards.',
   },
   rejected: {
     label: '! Not verified',
