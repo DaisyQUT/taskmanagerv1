@@ -27,7 +27,10 @@ const Navbar = () => {
                 <NavLink to="/admin/verifications" className={linkClass}>Verification queue</NavLink>
               )}
               {canUseBoards(user) && (
-                <NavLink to="/boards" className={linkClass}>Boards</NavLink>
+                <>
+                  <NavLink to="/boards" className={linkClass}>Boards</NavLink>
+                  <NavLink to="/my-posts" className={linkClass}>My posts</NavLink>
+                </>
               )}
               <NavLink to="/profile" className={linkClass}>Profile</NavLink>
               <button type="button" onClick={handleLogout} className="text-muted hover:text-ink">

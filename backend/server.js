@@ -13,6 +13,7 @@ app.use(express.json());
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/posts', require('./routes/postRoutes'));
+app.use('/api/responses', require('./routes/responseRoutes'));
 
 // ALN-13: on EC2, Express also serves the built React app, so the app and the API share one address.
 // Any path that isn't an API route gets index.html and React Router takes over from there.

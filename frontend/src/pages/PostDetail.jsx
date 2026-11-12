@@ -106,7 +106,10 @@ const PostDetail = () => {
           <p className="mt-5 whitespace-pre-line leading-relaxed">{post.description}</p>
 
           {post.isOwner && (
-            <p className="mt-6 border-t border-line pt-4 text-sm text-muted">This is your post.</p>
+            <p className="mt-6 border-t border-line pt-4 text-sm text-muted">
+              This is your post. See its responses in{' '}
+              <Link to="/my-posts" className="text-brand font-semibold underline">My posts</Link>.
+            </p>
           )}
           {post.status === 'closed' && !post.isOwner && (
             <p className="mt-6 border-t border-line pt-4 text-sm text-muted">This post is closed.</p>
@@ -117,6 +120,12 @@ const PostDetail = () => {
               <p className="text-sm font-bold">You responded on {formatDate(post.myResponse.createdAt)}</p>
               <p className="mt-1 text-sm text-muted">“{post.myResponse.message}”</p>
               <p className="mt-2 text-sm">{RESPONSE_STATUS[post.myResponse.status]}</p>
+              {post.myResponse.authorEmail && (
+                <p className="mt-1 text-sm font-semibold text-brand">
+                  Contact {post.authorName} at{' '}
+                  <a href={`mailto:${post.myResponse.authorEmail}`} className="underline">{post.myResponse.authorEmail}</a>
+                </p>
+              )}
             </div>
           )}
 
