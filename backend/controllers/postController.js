@@ -64,10 +64,10 @@ const listPosts = async (req, res) => {
     }
 };
 
-// ALN-25 (R10): one post in full. Only the author's name is shared, never their email.
+// ALN-25 (R10): one post in full. Only the author's name is shared; the email only after acceptance (ALN-20).
 const getPost = async (req, res) => {
     try {
-        const post = await Post.findById(req.params.id).populate('author', 'name');
+        const post = await Post.findById(req.params.id).populate('author', 'name email');
         if (!post) {
             return res.status(404).json({ message: NOT_FOUND });
         }
@@ -87,7 +87,13 @@ const getPost = async (req, res) => {
             isOwner: String(post.author?._id) === String(req.user.id),
             createdAt: post.createdAt,
             myResponse: myResponse
-                ? { message: myResponse.message, status: myResponse.status, createdAt: myResponse.createdAt }
+                ? {
+                    message: myResponse.message,
+                    status: myResponse.status,
+                    createdAt: myResponse.createdAt,
+                    // ALN-20: the author's email is shared only after they accept this member's response.
+                    authorEmail: myResponse.status === 'accepted' ? post.author?.email : undefined,
+                }
                 : null,
         });
     } catch (error) {
@@ -140,4 +146,37 @@ const respondToPost = async (req, res) => {
     }
 };
 
-module.exports = { createPost, listPosts, getPost, respondToPost, PAGE_SIZE };
+// ALN-20 (R12): the logged-in member's own posts, each with the responses it has received.
+// A responder's email is included only once the author has accepted them.
+const listMyPosts = async (req, res) => {
+    try {
+        const posts = await Post.find({ author: req.user.id }).sort({ createdAt: -1 });
+        const responses = await Response.find({ post: { $in: posts.map((post) => post.id) } })
+            .sort({ createdAt: 1 })
+            .populate('responder', 'name email');
+
+        res.json(
+            posts.map((post) => ({
+                id: post.id,
+                type: post.type,
+                title: post.title,
+                status: post.status,
+                createdAt: post.createdAt,
+                responses: responses
+                    .filter((response) => String(response.post) === String(post.id))
+                    .map((response) => ({
+                        id: response.id,
+                        responderName: response.responder?.name,
+                        message: response.message,
+                        status: response.status,
+                        createdAt: response.createdAt,
+                        contactEmail: response.status === 'accepted' ? response.responder?.email : undefined,
+                    })),
+            }))
+        );
+    } catch (error) {
+        res.status(500).json({ message: 'Something went wrong. Try again in a moment.' });
+    }
+};
+
+module.exports = { createPost, listPosts, getPost, respondToPost, listMyPosts, PAGE_SIZE };
