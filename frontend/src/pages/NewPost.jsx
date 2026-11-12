@@ -40,7 +40,6 @@ const NewPost = () => {
   const [formData, setFormData] = useState(emptyPost);
   const [errors, setErrors] = useState({});
   const [formMessage, setFormMessage] = useState('');
-  const [notice, setNotice] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   if (!canUseBoards(user)) {
@@ -61,14 +60,12 @@ const NewPost = () => {
     e.preventDefault();
     setSubmitting(true);
     setFormMessage('');
-    setNotice('');
     try {
       await axiosInstance.post('/api/posts', formData, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
-      setFormData(emptyPost);
-      setErrors({});
-      setNotice('Your post is live.');
+      // ALN-25: show the new post on its board, with a confirmation.
+      navigate(`/boards?type=${formData.type}`, { state: { notice: 'Your post is live.' } });
     } catch (err) {
       const data = err.response?.data;
       setErrors(data?.errors || {});
@@ -90,7 +87,6 @@ const NewPost = () => {
 
       <form onSubmit={handleSubmit} noValidate className="rounded-xl border border-line bg-white p-6">
         {formMessage && <p role="alert" className="mb-4 text-sm text-danger">{formMessage}</p>}
-        {notice && <p role="status" className="mb-4 text-sm font-semibold text-brand">✓ {notice}</p>}
 
         <RadioGroup
           name="type"
@@ -153,7 +149,7 @@ const NewPost = () => {
           </button>
           <button
             type="button"
-            onClick={() => navigate('/profile')}
+            onClick={() => navigate('/boards')}
             className="border border-line bg-white font-bold px-5 py-2 rounded-lg hover:bg-surface"
           >
             Cancel
