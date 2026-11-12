@@ -8,6 +8,7 @@ import VerificationQueue from './pages/VerificationQueue';
 import NewPost from './pages/NewPost';
 import Boards from './pages/Boards';
 import PostDetail from './pages/PostDetail';
+import MyPosts from './pages/MyPosts';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/boards" element={<Boards />} />
         <Route path="/posts/new" element={<NewPost />} />
         <Route path="/posts/:id" element={<PostDetail />} />
+        <Route path="/my-posts" element={<MyPosts />} />
       </Routes>
     </Router>
   );
