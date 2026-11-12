@@ -1,6 +1,7 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
 const Post = require('../models/Post');
+const Response = require('../models/Response');
 const { listPosts, getPost } = require('../controllers/postController');
 
 const mockRes = () => {
@@ -80,8 +81,10 @@ describe('ALN-25 browse posts (R9, R10)', () => {
     });
 
     describe('getPost', () => {
-        const stubFindById = (result) =>
-            sinon.stub(Post, 'findById').returns({ populate: sinon.stub().resolves(result) });
+        const stubFindById = (result) => {
+            sinon.stub(Response, 'findOne').resolves(null);
+            return sinon.stub(Post, 'findById').returns({ populate: sinon.stub().resolves(result) });
+        };
 
         it('returns the full post and marks whether the viewer wrote it', async () => {
             stubFindById(storedPost());
