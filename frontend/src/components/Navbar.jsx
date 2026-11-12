@@ -1,5 +1,6 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { canUseBoards } from '../postOptions';
 
 // ALN-27: white bar with the purple logo. NavLink marks the page you are on,
 // so the current page shows in purple and bold instead of using a coloured button.
@@ -24,6 +25,9 @@ const Navbar = () => {
             <>
               {user.role === 'admin' && (
                 <NavLink to="/admin/verifications" className={linkClass}>Verification queue</NavLink>
+              )}
+              {canUseBoards(user) && (
+                <NavLink to="/posts/new" className={linkClass}>New post</NavLink>
               )}
               <NavLink to="/profile" className={linkClass}>Profile</NavLink>
               <button type="button" onClick={handleLogout} className="text-muted hover:text-ink">
