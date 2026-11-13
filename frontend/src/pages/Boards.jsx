@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
-import { EXCHANGES, labelFor, canUseBoards } from '../postOptions';
+import { EXCHANGES, labelFor, canUseBoards, isPendingMember } from '../postOptions';
+import BoardOverview from '../components/BoardOverview';
 
 // ALN-25 (R9): Requests and Offers on two tabs, newest first. Layout follows wireframe WF2-2.
 // The tab and page live in the address (?type=offer&page=2), so the back button and shared links work.
@@ -50,6 +51,10 @@ const Boards = () => {
 
     fetchPosts();
   }, [user, type, page]);
+
+  if (isPendingMember(user)) {
+    return <BoardOverview user={user} />;
+  }
 
   if (!canUseBoards(user)) {
     return (

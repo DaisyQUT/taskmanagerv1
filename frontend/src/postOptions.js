@@ -26,3 +26,6 @@ export const labelFor = (options, value) => options.find((option) => option.valu
 
 // Only approved members use the exchange board (ALN-8). Admins are not graduates in the network.
 export const canUseBoards = (user) => user?.role === 'member' && user?.verificationStatus === 'approved';
+
+// ALN-21 (R3): pending members can see an anonymised overview of the boards while they wait.
+export const isPendingMember = (user) => user?.role === 'member' && user?.verificationStatus === 'pending';

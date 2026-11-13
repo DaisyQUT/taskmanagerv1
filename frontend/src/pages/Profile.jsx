@@ -10,7 +10,7 @@ const STATUS = {
     label: '○ Pending',
     labelClass: 'text-muted',
     title: 'Application pending',
-    text: "We're checking your graduation details. We'll show the decision here once an admin has reviewed your application.",
+    text: "We're checking your graduation details. We'll show the decision here once an admin has reviewed your application. Meanwhile, see what's on the boards.",
   },
   approved: {
     label: '✓ Verified',
