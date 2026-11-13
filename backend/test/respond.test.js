@@ -21,7 +21,7 @@ const request = (body = { message: goodMessage }, userId = 'm2') => ({
     body,
 });
 
-describe('ALN-19 respond to a post (R11)', () => {
+describe('ALN-19 respond to a post (R10)', () => {
     afterEach(() => {
         sinon.restore();
     });

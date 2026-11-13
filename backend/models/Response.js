@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-// ALN-19 (R11): a member's reply to someone else's post. The author later accepts or declines it (ALN-20).
+// ALN-19 (R10): a member's reply to someone else's post. The author later accepts or declines it (ALN-20).
 const responseSchema = new mongoose.Schema(
     {
         post: { type: mongoose.Schema.Types.ObjectId, ref: 'Post', required: true },

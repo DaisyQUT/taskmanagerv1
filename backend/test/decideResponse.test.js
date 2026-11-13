@@ -29,7 +29,7 @@ const pendingResponse = (overrides = {}) => ({
 
 const request = (userId = 'author1') => ({ params: { id: 'r1' }, user: { id: userId } });
 
-describe('ALN-20 accept or decline responses (R12)', () => {
+describe('ALN-20 accept or decline responses (R11, R12)', () => {
     afterEach(() => {
         sinon.restore();
     });

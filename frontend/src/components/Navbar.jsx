@@ -1,6 +1,6 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { canUseBoards } from '../postOptions';
+import { canUseBoards, isPendingMember } from '../postOptions';
 
 // ALN-27: white bar with the purple logo. NavLink marks the page you are on,
 // so the current page shows in purple and bold instead of using a coloured button.
@@ -25,6 +25,10 @@ const Navbar = () => {
             <>
               {user.role === 'admin' && (
                 <NavLink to="/admin/verifications" className={linkClass}>Verification queue</NavLink>
+              )}
+              {/* ALN-21: pending members get Boards (the anonymised overview) but not My posts. */}
+              {isPendingMember(user) && (
+                <NavLink to="/boards" className={linkClass}>Boards</NavLink>
               )}
               {canUseBoards(user) && (
                 <>

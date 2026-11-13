@@ -1,7 +1,7 @@
 const Post = require('../models/Post');
 const Response = require('../models/Response');
 const { validatePost } = require('../utils/validatePost');
-const { POST_TYPES } = require('../utils/postOptions');
+const { POST_TYPES, FIELDS } = require('../utils/postOptions');
 
 const PAGE_SIZE = 10;
 const MESSAGE_MIN = 20;
@@ -64,7 +64,7 @@ const listPosts = async (req, res) => {
     }
 };
 
-// ALN-25 (R10): one post in full. Only the author's name is shared; the email only after acceptance (ALN-20).
+// ALN-25 (R9): one post in full. Only the author's name is shared; the email only after acceptance (ALN-20).
 const getPost = async (req, res) => {
     try {
         const post = await Post.findById(req.params.id).populate('author', 'name email');
@@ -105,7 +105,7 @@ const getPost = async (req, res) => {
     }
 };
 
-// ALN-19 (R11): an approved member responds to someone else's open post, once.
+// ALN-19 (R10): an approved member responds to someone else's open post, once.
 const respondToPost = async (req, res) => {
     const message = typeof req.body.message === 'string' ? req.body.message.trim() : '';
     if (message.length < MESSAGE_MIN || message.length > MESSAGE_MAX) {
@@ -146,7 +146,7 @@ const respondToPost = async (req, res) => {
     }
 };
 
-// ALN-20 (R12): the logged-in member's own posts, each with the responses it has received.
+// ALN-20 (R11, R12): the logged-in member's own posts, each with the responses it has received.
 // A responder's email is included only once the author has accepted them.
 const listMyPosts = async (req, res) => {
     try {
@@ -179,4 +179,28 @@ const listMyPosts = async (req, res) => {
     }
 };
 
-module.exports = { createPost, listPosts, getPost, respondToPost, listMyPosts, PAGE_SIZE };
+// ALN-21 (R3): pending members see how many open posts each field has, without titles or names (D5),
+// so they can see what the network offers while they wait to be verified.
+const getOverview = async (req, res) => {
+    try {
+        const counts = await Post.aggregate([
+            { $match: { status: 'open' } },
+            { $group: { _id: { field: '$field', type: '$type' }, count: { $sum: 1 } } },
+        ]);
+
+        const countFor = (field, type) =>
+            counts.find((c) => c._id.field === field && c._id.type === type)?.count || 0;
+
+        res.json(
+            FIELDS.map((field) => ({
+                field,
+                requests: countFor(field, 'request'),
+                offers: countFor(field, 'offer'),
+            }))
+        );
+    } catch (error) {
+        res.status(500).json({ message: 'Something went wrong. Try again in a moment.' });
+    }
+};
+
+module.exports = { createPost, listPosts, getPost, respondToPost, listMyPosts, getOverview, PAGE_SIZE };
