@@ -64,7 +64,7 @@ const listPosts = async (req, res) => {
     }
 };
 
-// ALN-25 (R10): one post in full. Only the author's name is shared; the email only after acceptance (ALN-20).
+// ALN-25 (R9): one post in full. Only the author's name is shared; the email only after acceptance (ALN-20).
 const getPost = async (req, res) => {
     try {
         const post = await Post.findById(req.params.id).populate('author', 'name email');
@@ -105,7 +105,7 @@ const getPost = async (req, res) => {
     }
 };
 
-// ALN-19 (R11): an approved member responds to someone else's open post, once.
+// ALN-19 (R10): an approved member responds to someone else's open post, once.
 const respondToPost = async (req, res) => {
     const message = typeof req.body.message === 'string' ? req.body.message.trim() : '';
     if (message.length < MESSAGE_MIN || message.length > MESSAGE_MAX) {
@@ -146,7 +146,7 @@ const respondToPost = async (req, res) => {
     }
 };
 
-// ALN-20 (R12): the logged-in member's own posts, each with the responses it has received.
+// ALN-20 (R11, R12): the logged-in member's own posts, each with the responses it has received.
 // A responder's email is included only once the author has accepted them.
 const listMyPosts = async (req, res) => {
     try {

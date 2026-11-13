@@ -37,7 +37,7 @@ const storedPost = (overrides = {}) => ({
     ...overrides,
 });
 
-describe('ALN-25 browse posts (R9, R10)', () => {
+describe('ALN-25 browse posts (R9)', () => {
     afterEach(() => {
         sinon.restore();
     });

@@ -4,8 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
 import { POST_TYPES, EXCHANGES, canUseBoards } from '../postOptions';
 
-// ALN-25 (R10): one post in full. Layout follows wireframe WF2-3.
-// ALN-19 (R11): other members can respond once; after that they see their own response instead.
+// ALN-25 (R9): one post in full. Layout follows wireframe WF2-3.
+// ALN-19 (R10): other members can respond once; after that they see their own response instead.
 const MESSAGE_MIN = 20;
 const MESSAGE_MAX = 300;
 

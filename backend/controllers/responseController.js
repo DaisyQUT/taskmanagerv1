@@ -1,6 +1,6 @@
 const Response = require('../models/Response');
 
-// ALN-20 (R12): the post's author accepts or declines a response, once.
+// ALN-20 (R11, R12): the post's author accepts or declines a response, once.
 // Accepting shares both emails: the author sees it in My posts, the responder on the post page.
 const decideResponse = (decision) => async (req, res) => {
     try {

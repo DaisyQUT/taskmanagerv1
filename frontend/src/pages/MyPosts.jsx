@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
 import { POST_TYPES, canUseBoards } from '../postOptions';
 
-// ALN-20 (R12): authors see the responses to each of their posts and accept or decline them.
+// ALN-20 (R11, R12): authors see the responses to each of their posts and accept or decline them.
 // Accepting shares both emails, so the two members can arrange the exchange themselves.
 // Layout follows wireframe WF2-4.
 const typeLabel = (type) => POST_TYPES.find((t) => t.value === type)?.boardLabel;
