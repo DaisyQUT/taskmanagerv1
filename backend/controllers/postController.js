@@ -1,7 +1,7 @@
 const Post = require('../models/Post');
 const Response = require('../models/Response');
 const { validatePost } = require('../utils/validatePost');
-const { POST_TYPES } = require('../utils/postOptions');
+const { POST_TYPES, FIELDS } = require('../utils/postOptions');
 
 const PAGE_SIZE = 10;
 const MESSAGE_MIN = 20;
@@ -179,4 +179,28 @@ const listMyPosts = async (req, res) => {
     }
 };
 
-module.exports = { createPost, listPosts, getPost, respondToPost, listMyPosts, PAGE_SIZE };
+// ALN-21 (R3): pending members see how many open posts each field has, without titles or names (D5),
+// so they can see what the network offers while they wait to be verified.
+const getOverview = async (req, res) => {
+    try {
+        const counts = await Post.aggregate([
+            { $match: { status: 'open' } },
+            { $group: { _id: { field: '$field', type: '$type' }, count: { $sum: 1 } } },
+        ]);
+
+        const countFor = (field, type) =>
+            counts.find((c) => c._id.field === field && c._id.type === type)?.count || 0;
+
+        res.json(
+            FIELDS.map((field) => ({
+                field,
+                requests: countFor(field, 'request'),
+                offers: countFor(field, 'offer'),
+            }))
+        );
+    } catch (error) {
+        res.status(500).json({ message: 'Something went wrong. Try again in a moment.' });
+    }
+};
+
+module.exports = { createPost, listPosts, getPost, respondToPost, listMyPosts, getOverview, PAGE_SIZE };
